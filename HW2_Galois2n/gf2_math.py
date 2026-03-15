@@ -21,11 +21,16 @@ def poly_mul(a, b):
 
 def extended_gcd_gf2(a, m):
     old_r, r = m, a
-    old_s, s = 0, 1
-    steps = []
+    old_x, x = 0, 1 
+    history = []
+    
     while r != 0:
         q, rem = poly_divmod(old_r, r)
-        steps.append({'q': q, 'r': r, 's': s})
+        # Luu lai q, r, x
+        history.append({'q': q, 'r': r, 'x': x}) 
+        
         old_r, r = r, rem
-        old_s, s = s, old_s ^ poly_mul(q, s)
-    return old_s, steps
+        # Tinh x moi: x_new = old_x ^ (q * x)
+        old_x, x = x, old_x ^ poly_mul(q, x)
+        
+    return old_x, history
