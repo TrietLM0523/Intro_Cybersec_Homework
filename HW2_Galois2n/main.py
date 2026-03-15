@@ -1,25 +1,36 @@
 from gf2_math import extended_gcd_gf2, poly_divmod, poly_mul
 
-def run_test(a, m_poly):
-    inv, history = extended_gcd_gf2(a, m_poly)
+def main():
+    # m(x) = x^10 + x^3 + 1
+    m_poly = 1033 
+    test_case = [523, 1015]
     
-    print(f"\n>>> NGHỊCH ĐẢO CỦA a = {a}")
-    print(f"{'-'*55}")
-    print(f"{'Step':<5} | {'q (binary)':<12} | {'r (binary)':<12} | {'s (binary)':<12}")
+    print("--- BAI TAP AN TOAN THONG TIN - HW2 ---")
+    print(f"Da thuc m(x) dang so: {m_poly}")
     
-    for i, st in enumerate(history):
-        print(f"{i:<5} | {bin(st['q']):<12} | {bin(st['r']):<12} | {bin(st['s']):<12}")
-    
-    print(f"{'-'*55}")
-    print(f"KẾT QUẢ Cuối: {inv} (Nhị phân: {bin(inv)})")
-    
-    # Em check lại cho chắc ạ
-    _, check = poly_divmod(poly_mul(a, inv), m_poly)
-    print(f"Check (a * a^-1) % m: {'DÚNG' if check == 1 else 'SAI'}")
+    for a in test_case:
+        print("\n" + "*"*30)
+        print(f"Dang tinh nghich dao cho a = {a}")
+        
+        ket_qua, cac_buoc = extended_gcd_gf2(a, m_poly)
+        
+        for i, buoc in enumerate(cac_buoc):
+            print(f"Buoc {i+1}:")
+            print(f"  + Thuong q = {bin(buoc['q'])}")
+            print(f"  + So du r  = {bin(buoc['r'])}")
+            print(f"  + He so x  = {bin(buoc['x'])}") # In ra chu x
+            print("-" * 20)
+            
+        print(f"==> Ket qua cuoi cung (x): {ket_qua}")
+        print(f"Chuyen sang nhi phan: {bin(ket_qua)}")
+        
+        # Kiem tra lai
+        _, du = poly_divmod(poly_mul(a, ket_qua), m_poly)
+        print(f"Check lai (a * x) mod m = {du}")
+        if du == 1:
+            print("Ket qua dung roi nhe!")
+        else:
+            print("Co gi do sai sai...")
 
 if __name__ == "__main__":
-    M_POLY = 1033 # Tương đương x^10 + x^3 + 1
-    test_cases = [523, 1015]
-    
-    for val in test_cases:
-        run_test(val, M_POLY)
+    main()
